@@ -1,13 +1,22 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
-import { DataSpace } from "jsr:@eidos/core@0.1.3";
+import { DataSpace } from "jsr:@eidos/core";
 import { NodeServerDatabase } from "./db-server.ts";
 import { handleFunctionCall } from "./rpc.ts";
 const app = new Hono();
 
-const db = new NodeServerDatabase({
-  path: "./data/db.sqlite3",
-});
+const db = new NodeServerDatabase(
+  {
+    path: "./data/db.sqlite3",
+  }
+  // disable simple extension
+  // {
+  //   simple: {
+  //     libPath: "./dist-simple/libsimple",
+  //     dictPath: "./dist-simple/dict",
+  //   },
+  // }
+);
 
 const nodes = await db.selectObjects("select * from eidos__tree");
 console.log(nodes[0]);
@@ -20,6 +29,7 @@ const dataSpace = new DataSpace({
     setInterval: undefined,
   },
   isServer: true,
+  dataEventChannel: new BroadcastChannel("eidos-data-event"),
 });
 
 // const nodesViaRpc = await dataSpace.listTreeNodes();

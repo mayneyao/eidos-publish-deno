@@ -35,19 +35,25 @@ export class NodeServerDatabase extends BaseServerDatabase {
     }
   ) {
     super();
-    this.db = new Database(config.path, { readonly: true });
-    // const { libPath, dictPath } = options.simple;
-    // console.log("Lib path:", libPath);
-    // console.log("Dict path:", dictPath);
-    // try {
-    //   this.db.loadExtension(libPath);
-    //   const row = this.db
-    //     .prepare("select simple_query('pinyin') as query")
-    //     .get() as any;
-    //   console.log(row.query);
-    // } catch (error) {
-    //   console.error("Error loading extension:", error);
-    // }
+    this.db = new Database(config.path, { 
+      readonly: true,
+      enableLoadExtension: true  // Enable extension loading
+    });
+    
+    if (options?.simple) {
+      const { libPath, dictPath } = options.simple;
+      console.log("Lib path:", libPath);
+      console.log("Dict path:", dictPath);
+      try {
+        this.db.loadExtension(libPath);
+        const row = this.db
+          .prepare("select simple_query('pinyin') as query")
+          .get() as any;
+        console.log(row.query);
+      } catch (error) {
+        console.error("Error loading extension:", error);
+      }
+    }
   }
 
   prepare(sql: string): any {

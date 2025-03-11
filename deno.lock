@@ -93,6 +93,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@eidos/core@0.1.4",
       "jsr:@hono/hono@^4.7.1"
     ]
   }
