@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
-import { DataSpace } from "jsr:@eidos/core";
+import { DataSpace } from "jsr:@eidos/core@0.1.3";
 import { NodeServerDatabase } from "./db-server.ts";
 import { handleFunctionCall } from "./rpc.ts";
 const app = new Hono();
@@ -59,5 +59,8 @@ app.post("/server/api", async (c) => {
 });
 
 app.use("/*", serveStatic({ root: "./www" }));
+
+// fallback to index.html
+app.use("*", serveStatic({ path: "./www/index.html" }));
 
 Deno.serve(app.fetch);
