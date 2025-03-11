@@ -4,7 +4,9 @@
     "eidos": "jsr:@eidos/core@0.1.4"
   },
   "tasks": {
-    "start": "deno run --allow-net --unstable-broadcast-channel main.ts"
+    "dev": "deno run --allow-net --unstable-broadcast-channel main.ts",
+    "build": "deno compile --allow-net --allow-env --allow-read --allow-write --allow-ffi --unstable-broadcast-channel --output=eidos-publish main.ts",
+    "start": "./eidos-publish"
   },
   "compilerOptions": {
     "jsx": "precompile",
