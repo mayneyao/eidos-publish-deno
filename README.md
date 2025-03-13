@@ -7,13 +7,23 @@ put your db file and static file in `data` folder, the folder structure should b
 ```
 - data
     - db.sqlite3
-    - db.sqlite3-wal
-    - db.sqlite3-shm
     - files
         - your-static-file-here
 ```
 
 ## Dev
+
+```
+deno task dev
+```
+
+## Build
+
+```
+deno task build
+```
+
+## Run
 
 ```
 deno task start

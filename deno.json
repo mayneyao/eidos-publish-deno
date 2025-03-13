@@ -1,12 +1,13 @@
 {
   "imports": {
     "hono": "jsr:@hono/hono@^4.7.1",
-    "eidos": "jsr:@eidos/core@0.1.4"
+    "eidos": "jsr:@eidos/core@0.1.5"
   },
   "tasks": {
     "dev": "deno run --allow-net --unstable-broadcast-channel main.ts",
     "build": "deno compile --allow-net --allow-env --allow-read --allow-write --allow-ffi --unstable-broadcast-channel --output=eidos-publish main.ts",
-    "start": "./eidos-publish"
+    "start": "./eidos-publish",
+    "download-simple": "deno run --allow-net --allow-read --allow-write --allow-run --allow-env scripts/download-simple.ts"
   },
   "compilerOptions": {
     "jsx": "precompile",

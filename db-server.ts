@@ -35,11 +35,11 @@ export class NodeServerDatabase extends BaseServerDatabase {
     }
   ) {
     super();
-    this.db = new Database(config.path, { 
+    this.db = new Database(config.path, {
       readonly: true,
-      enableLoadExtension: true  // Enable extension loading
+      enableLoadExtension: true, // Enable extension loading
     });
-    
+
     if (options?.simple) {
       const { libPath, dictPath } = options.simple;
       console.log("Lib path:", libPath);
@@ -69,6 +69,7 @@ export class NodeServerDatabase extends BaseServerDatabase {
   ): Promise<{ [columnName: string]: any }[]> {
     const stmt = this.db.prepare(sql);
     if (bind != null) {
+      console.log("params", { sql, bind });
       return stmt.all(bind) as { [columnName: string]: any }[];
     }
     return stmt.all() as { [columnName: string]: any }[];

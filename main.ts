@@ -8,14 +8,14 @@ const app = new Hono();
 const db = new NodeServerDatabase(
   {
     path: "./data/db.sqlite3",
-  }
+  },
   // disable simple extension
-  // {
-  //   simple: {
-  //     libPath: "./dist-simple/libsimple",
-  //     dictPath: "./dist-simple/dict",
-  //   },
-  // }
+  {
+    simple: {
+      libPath: "./dist-simple/libsimple",
+      dictPath: "./dist-simple/dict",
+    },
+  }
 );
 
 const nodes = await db.selectObjects("select * from eidos__tree");
@@ -30,6 +30,7 @@ const dataSpace = new DataSpace({
   },
   isServer: true,
   dataEventChannel: new BroadcastChannel("eidos-data-event"),
+  enableFTS: true,
 });
 
 // const nodesViaRpc = await dataSpace.listTreeNodes();
@@ -73,4 +74,4 @@ app.use("/*", serveStatic({ root: "./www" }));
 // fallback to index.html
 app.use("*", serveStatic({ path: "./www/index.html" }));
 
-Deno.serve(app.fetch);
+Deno.serve({ port: 8080 }, app.fetch);
