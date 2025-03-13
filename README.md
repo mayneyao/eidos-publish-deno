@@ -2,7 +2,7 @@
 
 ## Usage
 
-put your db file and static file in `data` folder, the folder structure should be like this:
+Replace the `data` folder with your own db file and static file, the folder structure should be like this:
 
 ```
 - data
@@ -11,20 +11,22 @@ put your db file and static file in `data` folder, the folder structure should b
         - your-static-file-here
 ```
 
+## Frontend Resources
+
+The frontend resources in the `www` directory are obtained from the [eidos] (https://github.com/mayneyao/eidos) project through `build:ink`.
+
 ## Dev
 
-```
+```shell
+# if you need enale fts for table
+deno task download-simple
+
+# dev
 deno task dev
-```
 
-## Build
-
-```
+# build
 deno task build
-```
 
-## Run
-
-```
+# run
 deno task start
 ```

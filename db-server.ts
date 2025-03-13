@@ -2,14 +2,25 @@ import { Database } from "jsr:@db/sqlite@0.12";
 
 abstract class BaseServerDatabase {
   filename?: string;
-  abstract prepare(sql: string): any;
+  abstract prepare(sql: string): {
+    run: (bind?: any[]) => void;
+  };
   abstract close(): void;
   abstract selectObjects(
     sql: string,
     bind?: any[]
   ): Promise<{ [columnName: string]: any }[]>;
   abstract transaction(func: (db: BaseServerDatabase) => void): any;
-  abstract exec(opts: any): Promise<any>;
+  abstract exec(
+    opts:
+      | string
+      | {
+          sql: string;
+          bind?: any[];
+          rowMode?: "array" | "object";
+          returnValue?: "resultRows" | "saveSql";
+        }
+  ): Promise<any>;
   abstract createFunction(opt: {
     name: string;
     xFunc: (...args: any[]) => any;
@@ -56,7 +67,7 @@ export class NodeServerDatabase extends BaseServerDatabase {
     }
   }
 
-  prepare(sql: string): any {
+  prepare(sql: string) {
     return this.db.prepare(sql);
   }
   close() {
@@ -69,7 +80,6 @@ export class NodeServerDatabase extends BaseServerDatabase {
   ): Promise<{ [columnName: string]: any }[]> {
     const stmt = this.db.prepare(sql);
     if (bind != null) {
-      console.log("params", { sql, bind });
       return stmt.all(bind) as { [columnName: string]: any }[];
     }
     return stmt.all() as { [columnName: string]: any }[];
@@ -86,32 +96,36 @@ export class NodeServerDatabase extends BaseServerDatabase {
     bind?: any[];
     rowMode?: "array" | "object";
   }) {
-    if (typeof opts === "string") {
-      return this.db.exec(opts);
-    } else if (typeof opts === "object") {
-      const { sql, bind } = opts;
-      const _bind = bind?.map((item: any) => {
-        // if item is boolean return 1 or 0
-        if (typeof item === "boolean") {
-          return item ? 1 : 0;
+    try {
+      if (typeof opts === "string") {
+        return this.db.exec(opts);
+      } else if (typeof opts === "object") {
+        const { sql, bind } = opts;
+        const _bind = bind?.map((item: any) => {
+          // if item is boolean return 1 or 0
+          if (typeof item === "boolean") {
+            return item ? 1 : 0;
+          }
+          return item;
+        });
+        const stmt = this.db.prepare(sql);
+        let res = null;
+        if (stmt.readonly) {
+          res = stmt.all(_bind);
+          // console.log("res", res);
+        } else {
+          if (_bind == null) {
+            return stmt.run();
+          }
+          return stmt.run(_bind);
         }
-        return item;
-      });
-      const stmt = this.db.prepare(sql);
-      let res = null;
-      if (stmt.readonly) {
-        res = stmt.all(_bind);
-        // console.log("res", res);
-      } else {
-        if (_bind == null) {
-          return stmt.run();
+        if (opts.rowMode === "array") {
+          return res.map((item: any) => Object.values(item));
         }
-        return stmt.run(_bind);
+        return res;
       }
-      if (opts.rowMode === "array") {
-        return res.map((item: any) => Object.values(item));
-      }
-      return res;
+    } catch (error) {
+      console.error("Error executing SQL:", error);
     }
     return [];
   }
