@@ -13,12 +13,12 @@ Replace the `data` folder with your own db file and static file, the folder stru
 
 ## Frontend Resources
 
-The frontend resources in the `www` directory are obtained from the [eidos] (https://github.com/mayneyao/eidos) project through `build:ink`.
+The frontend resources in the `www` directory are obtained from the [eidos](https://github.com/mayneyao/eidos) project through `build:ink`.
 
 ## Dev
 
 ```shell
-# if you need enale fts for table
+# if you need enable fts for table
 deno task download-simple
 
 # dev
